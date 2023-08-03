@@ -1,7 +1,11 @@
-import { CustomFilter, Hero, SearchBar } from '@/components'
+import { CarCard, CustomFilter, Hero, SearchBar } from '@/components'
+import { Car } from '@/components/CarCard';
+import { fetchCars } from '@/utils'
 import Image from 'next/image'
 
-export default function Home() {
+export default async function Home() {
+  const allCars = await fetchCars();
+  const noData = !Array.isArray(allCars) || allCars.length === 0 || !allCars;
   return (
     <main className='overflow-hidden'>
       <Hero />
@@ -16,6 +20,11 @@ export default function Home() {
               <CustomFilter title='year' />
             </div>
           </div>
+          {noData ? <>Nothing here...</> : <>
+            <div className='home__cars-wrapper'>
+              {allCars.map((car: Car, i) => <CarCard key={i} car={car} />)}
+            </div>
+          </>}
         </div>
       </div>
     </main>
